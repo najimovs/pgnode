@@ -6,6 +6,7 @@
 		"start": "node --env-file=.env src/index.js"
 	},
 	"dependencies": {
+		"fastify": "^5.8.4",
 		"pg": "^8.20.0"
 	}
 }

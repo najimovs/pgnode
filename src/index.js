@@ -1,4 +1,7 @@
 import { Client } from "pg"
+import Fastify from "fastify"
+
+const app = Fastify()
 
 const PG_USER = process.env.PG_USER
 const PG_PASSWORD = process.env.PG_PASSWORD
@@ -17,15 +20,34 @@ const client = new Client( {
 
 await client.connect()
 
-const result = await client.query( `select
-  b.id,
-  b.created_at,
-  b.name,
-  c.name as category,
-  u.fullname author
-from books b
-join users u on u.id = b.author_id
-join categories c on c.id = b.category_id
-` )
+const todos_per_page = 3
 
-console.log( result.rows )
+app.get( "/todos/:page", async ( req, res ) => {
+
+	const offset = ( req.params.page - 1 ) * todos_per_page
+
+	const sql = `
+		select *
+		from todos
+		offset $1 limit $2
+	`
+
+	const result = await client.query( sql, [ offset, todos_per_page ] )
+
+	return result.rows
+} )
+
+app.get( "/users/:id", async ( req, res ) => {
+
+	const sql = `
+		select *
+		from users
+		where id = $1
+	`
+
+	const result = await client.query( sql, [ req.params.id ] )
+
+	return result.rows
+} )
+
+app.listen( { port: 3_000 } )
