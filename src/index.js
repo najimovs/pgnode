@@ -9,3 +9,27 @@ app.get( "/todos", async () => {
 } )
 
 app.listen( { port: 3_000 } )
+
+
+/*
+	/books 10
+	/books?page=1 10
+	/books?page=2 10
+
+	/books?page=1
+	/books?page=1&category=2
+
+	/books?page=2&category=2&count=5
+
+	Auth
+		id
+		first_name
+		last_name
+
+	Book
+		id
+		name
+		author(fullname)
+		price
+		cover_url
+*/
